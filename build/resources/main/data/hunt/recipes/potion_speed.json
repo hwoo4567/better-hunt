@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:glass_bottle"
+    }
+  ],
+  "result": {
+    "item": "minecraft:splash_potion",
+    "nbt": {
+      "CustomPotionEffects": [
+        {
+          "Id": 1,
+          "Amplifier": 2,
+          "Duration": 200
+        }
+      ],
+      "display": {
+        "Name": "{\"text\":\"Speed Potion\",\"italic\":\"false\"}"
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:glass_bottle"
+    }
+  ],
+  "result": {
+    "item": "minecraft:splash_potion",
+    "nbt": {
+      "CustomPotionEffects": [
+        {
+          "Id": 6,
+          "Amplifier": 0
+        }
+      ],
+      "display": {
+        "Name": "{\"text\":\"Instant Health Potion\",\"italic\":\"false\"}"
+      }
+    }
+  }
+}

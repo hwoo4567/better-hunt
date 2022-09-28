@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:golden_pickaxe"
+    },
+    {
+      "item": "minecraft:glass_bottle"
+    }
+  ],
+  "result": {
+    "item": "minecraft:splash_potion",
+    "nbt": {
+      "CustomPotionEffects": [
+        {
+          "Id": 3,
+          "Amplifier": 1,
+          "Duration": 3600
+        }
+      ],
+      "display": {
+        "Name": "{\"text\":\"Haste Potion\",\"italic\":\"false\"}"
+      }
+    }
+  }
+}

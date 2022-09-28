@@ -1,0 +1,32 @@
+modLoader="javafml"
+loaderVersion="[41,)"
+license="MIT"
+[[mods]]
+modId="hunt"
+version="${file.jarVersion}"
+displayName="Better PVP Survival Mod"
+# logoFile="hunt.png"
+
+authors="worldedit1234"
+description='''
+This mod is for better survival PVP play.
+There are several extra recipes and tools.
+And it provides optimum game system for competition.
+Enjoy :)
+'''
+
+[[dependencies.hunt]] #optional
+    modId="forge"
+    mandatory=true
+    versionRange="[41,)"
+    ordering="NONE"
+    # Side this dependency is applied on - BOTH, CLIENT or SERVER
+    side="BOTH"
+
+# Here's another dependency
+[[dependencies.hunt]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19,1.20)"
+    ordering="NONE"
+    side="BOTH"
