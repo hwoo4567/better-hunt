@@ -5,6 +5,7 @@ import com.worldedit1234.hunt.command.Position;
 import com.worldedit1234.hunt.command.CommandRegistry;
 import com.worldedit1234.hunt.drop.Drop;
 import com.worldedit1234.hunt.entity.OwnedFireball;
+import com.worldedit1234.hunt.setup.Setup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;

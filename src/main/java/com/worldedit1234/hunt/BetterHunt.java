@@ -1,6 +1,7 @@
 package com.worldedit1234.hunt;
 
 import com.mojang.logging.LogUtils;
+import com.worldedit1234.hunt.setup.Setup;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;

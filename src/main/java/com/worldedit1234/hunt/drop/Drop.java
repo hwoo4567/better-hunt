@@ -87,7 +87,8 @@ public class Drop {
         dropItem.setCount(dropSize);
         spawnItemEntity(player, dropItem);
 
-        LOGGER.info("Source Drop: {} drops {}% of item {}.", player.getName().getString(), dropRatio, itemStack.getDisplayName().getString());
+        LOGGER.info("Source Drop: {} drops {}% of item {}.",
+                player.getName().getString(), dropRatio, itemStack.getDisplayName().getString());
     }
 
     private static void dropTool(Player player, ItemStack itemStack) {
@@ -104,14 +105,16 @@ public class Drop {
         if (rand <= 20) {  // 20%
             spawnItemEntity(player, itemStack.copy());
             itemStack.setCount(0);
-            LOGGER.info("Tool Drop: {} drops item {}.", player.getName().getString(), itemStack.getDisplayName().getString());
+            LOGGER.info("Tool Drop: {} drops item {}.",
+                    player.getName().getString(), itemStack.getDisplayName().getString());
         }
         else if (rand <= 80) {  // 60%
             int damageRatio = getRandom(30, 70);  // 30% ~ 70% damage
             int damage = itemStack.getDamageValue();
             itemStack.setDamageValue(damage - (damage * damageRatio / 100));
 
-            LOGGER.info("Tool Damage: {}'s item {} gets {}% damage.", player.getName().getString(), itemStack.getDisplayName().getString(), damageRatio);
+            LOGGER.info("Tool Damage: {}'s item {} gets {}% damage.",
+                    player.getName().getString(), itemStack.getDisplayName().getString(), damageRatio);
         }
     }
 
