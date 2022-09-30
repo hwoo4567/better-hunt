@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:stone_pickaxe"
+    },
+    {
+      "item": "minecraft:glass_bottle"
+    }
+  ],
+  "result": {
+    "item": "minecraft:splash_potion",
+    "nbt": {
+      "CustomPotionEffects": [
+        {
+          "Id": 16,
+          "Amplifier": 0,
+          "Duration": 3600
+        }
+      ],
+      "display": {
+        "Name": "{\"text\":\"Night Vision Potion\",\"italic\":\"false\"}"
+      }
+    }
+  }
+}

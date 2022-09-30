@@ -12,6 +12,7 @@ public class Info {
             "golden_apple: apple + gold_ingot * 4",
             "potion haste: golden_pickaxe + glass_bottle",
             "potion instant_health: gold_ingot + redstone + glass_bottle",
-            "potion speed: gold_ingot + sugar + glass_bottle"
+            "potion speed: gold_ingot + sugar + glass_bottle",
+            "potion night_vision: stone_pickaxe + glass_bottle"
     ));
 }

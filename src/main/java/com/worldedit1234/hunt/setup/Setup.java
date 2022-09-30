@@ -8,10 +8,11 @@ import org.slf4j.Logger;
 public class Setup {
     public static final int DEFAULT_BORDER_SIZE = 500;
     public static final double FIREBALL_SPEED = 1.4D;
-    public static final int FIREBALL_POWER = 2;
+    public static final int FIREBALL_POWER = 3;
     public static final float MAX_FIREBALL_TRAVEL = 200.0F;
     public static final float EXPLOSION_DAMAGE = 0.2F;
     public static final int OUTDOOR_HUNGER_LEVEL = 2;
+    public static final int[] HUNGER_FREE_RANGE = {20, 120};
 
     private static final Logger LOGGER = LogUtils.getLogger();
 

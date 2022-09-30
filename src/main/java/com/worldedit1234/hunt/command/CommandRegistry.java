@@ -8,56 +8,88 @@ import com.worldedit1234.hunt.setup.Info;
 import com.worldedit1234.hunt.setup.Setup;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 public class CommandRegistry {
-    public CommandRegistry(CommandDispatcher<CommandSourceStack> dispatcher) {
-        var actionbar = Position.getPosition();
+    private static Actionbar actionbar = Actionbar.getActionbar();
 
+    public CommandRegistry(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> cmd =
         Commands.literal("betterHunt")
         .then(Commands.literal("position")
                 .then(Commands.literal("hide")
-                        .executes(context -> actionbar.setDisplayType(PosType.HIDDEN)))
+                        .executes(context -> actionbar.setPosType(PosType.HIDDEN)))
                 .then(Commands.literal("me")
-                        .executes(context -> actionbar.setDisplayType(PosType.ME)))
+                        .executes(context -> actionbar.setPosType(PosType.ME)))
                 .then(Commands.literal("nearest")
-                        .executes(context -> actionbar.setDisplayType(PosType.NEAREST)))
+                        .executes(context -> actionbar.setPosType(PosType.NEAREST)))
                 .then(Commands.literal("furthest")
-                        .executes(context -> actionbar.setDisplayType(PosType.FURTHEST)))
-                // position + no argument
-                .executes(context -> sendMessage(context, "Position Display Type: %s",
+                        .executes(context -> actionbar.setPosType(PosType.FURTHEST)))
+                // position + no arguments
+                .executes(context -> sendResult(context, "Position Display Type: %s",
                         actionbar.getPosType().name().toLowerCase())))
+
+        .then(Commands.literal("timer")
+                .then(Commands.literal("start")
+                        .then(Commands.argument("second", IntegerArgumentType.integer(1))
+                                .executes(CommandRegistry::setAndStartTimer)))
+                .then(Commands.literal("stop")
+                        .executes(context -> actionbar.stopTimer()))
+                // timer + no arguments
+                .executes(context -> sendResultAll(context, "%s\nTicking: %b",
+                        actionbar.getTimerStr(), actionbar.isTicking())))
 
         .then(Commands.literal("border")
                 .then(Commands.literal("set")
                         .then(Commands.argument("size", IntegerArgumentType.integer(10))
                                 .executes(CommandRegistry::setBorderSize)))
-                // border + no argument
-                .executes(CommandRegistry::getBorderSize))
+                // border + no arguments
+                .executes(CommandRegistry::sendBorderSize))
+
         .then(Commands.literal("info")
                 .then(Commands.literal("recipes")
-                        .executes(context -> sendMessage(context, String.join("\n", Info.recipes))))
-                // info + no argument
-                .executes(context -> sendMessage(context, Info.description)));
+                        .executes(context -> sendResultAll(context, String.join("\n", Info.recipes))))
+                // info + no arguments
+                .executes(context -> sendResultAll(context, Info.description)));
 
         dispatcher.register(cmd);
     }
 
-    // throws CommandSyntaxException
-    private static int sendMessage(CommandContext<CommandSourceStack> commandContext, String message, Object... args)  {
-        var entity = commandContext.getSource().getEntity();
+    private static int sendResult(CommandContext<CommandSourceStack> context, String message, Object... args) {
+        var entity = context.getSource().getEntity();
         if (entity instanceof Player player) {
-            player.sendSystemMessage(Component.literal(String.format(message, args)));
+            sendMessage(player, message, args);
         }
 
         return 1;
     }
 
-    private static int getBorderSize(CommandContext<CommandSourceStack> context) {
+    private static int sendResultAll(CommandContext<CommandSourceStack> context, String message, Object... args) {
+        var server = context.getSource().getServer();
+        for (var i: server.getPlayerList().getPlayers()) {
+            sendMessage(i, message, args);
+        }
+
+        return 1;
+    }
+
+    private static void sendMessage(Player player, String message, Object... args) {
+        player.sendSystemMessage(Component.literal(String.format(message, args)));
+    }
+
+    private static int setAndStartTimer(CommandContext<CommandSourceStack> context) {
+        var source = context.getSource();
+        actionbar.setHome(source.getServer(), source.getLevel(),
+                new BlockPos(source.getPosition()));
+        actionbar.startTimer(IntegerArgumentType.getInteger(context, "second"));
+        return 1;
+    }
+
+    private static int sendBorderSize(CommandContext<CommandSourceStack> context) {
         int value = IntegerArgumentType.getInteger(context, "size");
-        return sendMessage(context, "Border size is %d*%d.", value, value);
+        return sendResult(context, "Border size is %d*%d.", value, value);
     }
 
     private static int setBorderSize(CommandContext<CommandSourceStack> context) {

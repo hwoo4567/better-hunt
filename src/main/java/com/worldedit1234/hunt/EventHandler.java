@@ -1,7 +1,7 @@
 package com.worldedit1234.hunt;
 
 import com.mojang.logging.LogUtils;
-import com.worldedit1234.hunt.command.Position;
+import com.worldedit1234.hunt.command.Actionbar;
 import com.worldedit1234.hunt.command.CommandRegistry;
 import com.worldedit1234.hunt.drop.Drop;
 import com.worldedit1234.hunt.entity.OwnedFireball;
@@ -49,21 +49,20 @@ public class EventHandler {
         }
 
         var server = event.getServer();
-        var position = Position.getPosition();
-
-        position.showPositionAll(server);
+        var actionbar = Actionbar.getActionbar();
+        actionbar.tickTimer();
+        actionbar.sendResultAll(server);
     }
 
     @SubscribeEvent
     public static void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {
-        // y좌표 20 ~ 120 안에 있지 않으면 허기
         if (event.side.isClient()) {
             return;
         }
 
         var player = event.player;
         var y = player.getY();
-        if (y < 20 || y > 120) {
+        if (y < Setup.HUNGER_FREE_RANGE[0] || y > Setup.HUNGER_FREE_RANGE[1]) {
             player.addEffect(new MobEffectInstance(MobEffects.HUNGER,
                     0, Setup.OUTDOOR_HUNGER_LEVEL, false, false));
         }
