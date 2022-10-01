@@ -13,6 +13,7 @@ public class Setup {
     public static final float EXPLOSION_DAMAGE = 0.2F;
     public static final int OUTDOOR_HUNGER_LEVEL = 2;
     public static final int[] HUNGER_FREE_RANGE = {20, 120};
+    public static final int APPLE_DROP_CHANCE = 10;
 
     private static final Logger LOGGER = LogUtils.getLogger();
 

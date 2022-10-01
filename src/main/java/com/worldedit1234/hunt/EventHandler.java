@@ -9,15 +9,20 @@ import com.worldedit1234.hunt.setup.Setup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -25,9 +30,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.server.command.ConfigCommand;
 import org.slf4j.Logger;
 
+import java.util.Random;
+
 @Mod.EventBusSubscriber(modid = BetterHunt.MOD_ID)
 public class EventHandler {
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Random RANDOM = new Random();
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
@@ -91,6 +99,27 @@ public class EventHandler {
 
             if (!player.isCreative()) {
                 itemStack.setCount(count - 1);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBreakEvent(BlockEvent.BreakEvent event) {
+        Level level = (Level) event.getLevel();
+        var pos = event.getPos();
+
+        // 참나무 잎
+        if (level.getBlockState(pos).is(Blocks.OAK_LEAVES)) {
+            int rand = RANDOM.nextInt(100);
+            if (rand < Setup.APPLE_DROP_CHANCE) {
+                level.addFreshEntity(new ItemEntity(
+                        level,
+                        pos.getX(),
+                        pos.getY(),
+                        pos.getZ(),
+                        Items.APPLE.getDefaultInstance()
+                ));
+                LOGGER.info("New Apple.");
             }
         }
     }
