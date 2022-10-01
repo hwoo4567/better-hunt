@@ -1,36 +1,23 @@
 package com.worldedit1234.hunt.command;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Position;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.sql.Array;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.Year;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
-
-// TODO: 화살표 방향 표시 구현하기
 
 public class Actionbar {
     private static Actionbar actionbar = null;
     private final Random RANDOM = new Random();
     private PosType posDisplayType;
-    private int timer;  // minecraft tick (= 0.05s)
+    private int timer;  // second
     private boolean ticking;
     private long prevTick;
 
@@ -100,7 +87,7 @@ public class Actionbar {
         return String.format(
                 "%s%s : %d, %d, %d",
                 target.getName().getString(),
-                direction? String.format(" (%c)", getDirection(receiver, target)) : "",
+                direction ? String.format(" (%s)", getDirectionStr(receiver, target)) : "",
                 Math.round(target.getX() - 0.5),
                 Math.round(target.getY() - 0.5),
                 Math.round(target.getZ() - 0.5)
@@ -195,7 +182,7 @@ public class Actionbar {
             }
         }
 
-        return nearest;  // 플레이어가 한 명 있을 땐 null이다.
+        return nearest;  // 플레이어가 한 명 있을 땐 null
     }
 
     @Nullable
@@ -211,21 +198,31 @@ public class Actionbar {
             }
         }
 
-        return furthest;  // 플레이어가 한 명 있을 땐 null이다.
+        return furthest;  // 플레이어가 한 명 있을 땐 null
     }
 
-    private static char getDirection(Player receiver, Player target) {
-        String arrows = "↑↗→↘↓↙←↖";
+    private static String getDirectionStr(Player receiver, Player target) {
+        return getDirectionStr(receiver, target.getX(), target.getZ());
+    }
 
-        var v1 = receiver.getLookAngle();
-        var lookAt = new Vec2((float) v1.x, (float) v1.z);
-        var posVec = new Vec2((float) (target.getX() - receiver.getX()),
-                (float) (target.getZ() - receiver.getZ()));
+    private static String getDirectionStr(Player receiver, double x, double z) {
+        final String[] ARROWS = {"↑", "⬉", "←", "⬋", "↓", "⬊", "→", "⬈"};
+        float look = receiver.getYRot();  // 가로 회전
 
-        var angle = Math.asin(lookAt.y / lookAt.length());
-        var lookAngle = lookAt.x >= 0 ? angle : Math.PI * 2 - angle;  // 오른쪽 각도
+        // vector.x : X좌표, vector.y : Z좌표
+        var posVec = new Vec2((float) (x - receiver.getX()), (float) (z - receiver.getZ()));
 
-        return arrows.charAt(1);
+        var length = posVec.length();
+        if (length == 0) {
+            return "HERE";
+        }
+
+        var angle0 = Math.acos(posVec.y / length);
+        float posAngle = (float) Math.toDegrees(posVec.x >= 0 ? -angle0 : angle0);
+
+        var angle = new Angle(look - posAngle);
+        int index = (int) (angle.rotate(22.5F).getDegree() / 45F);
+        return ARROWS[index];
     }
 
     private static String resultJoin(String str, String ...args) {
