@@ -65,6 +65,11 @@ public class Actionbar {
         this.home = home;
     }
 
+    @Nullable
+    public BlockPos getHome() {
+        return this.home;  // 타이머가 작동되지 않았다면 null
+    }
+
     public String getTimerStr() {
         int seconds = this.timer % 60;
         int minutes = (this.timer / 60) % 60;

@@ -42,8 +42,7 @@ public class CommandRegistry {
                 .then(Commands.literal("stop")
                         .executes(context -> actionbar.stopTimer()))
                 // timer + no arguments
-                .executes(context -> sendResultAll(context, "%s\nTicking: %b",
-                        actionbar.getTimerStr(), actionbar.isTicking())))
+                .executes(this::getTimerInfo))
 
         .then(Commands.literal("border")
                 .then(Commands.literal("set")
@@ -93,6 +92,19 @@ public class CommandRegistry {
         actionbar.setHome(source.getServer(), source.getLevel(),
                 new BlockPos(source.getPosition()));
         actionbar.startTimer(IntegerArgumentType.getInteger(context, "second"));
+        return 1;
+    }
+
+    private int getTimerInfo(CommandContext<CommandSourceStack> context) {
+        var home = actionbar.getHome();
+        sendResultAll(
+                context,
+                "%s\nTicking: %b\nHome: %s",
+                actionbar.getTimerStr(),
+                actionbar.isTicking(),
+                home == null ? "???" : home.toString()
+        );
+
         return 1;
     }
 
