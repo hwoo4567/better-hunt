@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-/* 도구 (검, 곡괭이) : 20%의 확률로 떨굼, 내구도 대폭 감소
+/* 도구 (검, 곡괭이) : 10%의 확률로 떨굼, 내구도 대폭 감소
  * 자원 (다이아몬드, 철 ...) : 10 ~ 40%를 떨굼
  * 갑옷 : 도구와 같음
  * 설커상자는 확정적으로 떨굼
@@ -93,25 +93,28 @@ public class Drop {
 
     private static void dropTool(Player player, ItemStack itemStack) {
         // Drops "Tool" type items
-        // Drop: 20%
-        // Damage: 60% (30% ~ 70% damage)
+        // Drop: 10%
+        // Damage: 60% (10% ~ 70% damage)
         // Tool item must be damageable
+
         if (!itemStack.getItem().isDamageable(itemStack)) {
             LOGGER.warn("dropTool is called when the item is not damageable.");
             return;
         }
+
         int rand = getRandom(1, 100);
 
-        if (rand <= 20) {  // 20%
+        if (rand <= 10) {  // 10%
             spawnItemEntity(player, itemStack.copy());
             itemStack.setCount(0);
             LOGGER.info("Tool Drop: {} drops item {}.",
                     player.getName().getString(), itemStack.getDisplayName().getString());
         }
-        else if (rand <= 80) {  // 60%
-            int damageRatio = getRandom(30, 70);  // 30% ~ 70% damage
-            int damage = itemStack.getDamageValue();
-            itemStack.setDamageValue(damage - (damage * damageRatio / 100));
+        else if (rand <= 70) {  // 60%
+            int damageRatio = getRandom(10, 70);  // 10% ~ 70% damage
+            int damage = itemStack.getDamageValue();  // 아이템이 원래 입은 데미지
+            int total = itemStack.getMaxDamage() - damage;  // 남은 내구도
+            itemStack.setDamageValue(damage + (total * damageRatio / 100));
 
             LOGGER.info("Tool Damage: {}'s item {} gets {}% damage.",
                     player.getName().getString(), itemStack.getDisplayName().getString(), damageRatio);
