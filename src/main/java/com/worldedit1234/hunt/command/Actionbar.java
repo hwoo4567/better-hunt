@@ -21,7 +21,7 @@ public class Actionbar {
     private boolean ticking;
     private long prevTick;
 
-    private MinecraftServer server;
+    private MinecraftServer server;  // for getting players list
     private Level level;
     private BlockPos home;
 
@@ -144,7 +144,7 @@ public class Actionbar {
 
     public void sendResultAll(MinecraftServer server) {
         for (ServerPlayer i: server.getPlayerList().getPlayers()) {
-            sendResult(i);
+            sendResult(server, i);
         }
     }
 
@@ -165,7 +165,7 @@ public class Actionbar {
         return this.timer == 0 ? null : this.getTimerStr();  // null: timer 0
     }
 
-    private void sendResult(ServerPlayer receiver) {
+    private void sendResult(MinecraftServer server, ServerPlayer receiver) {
         var posResult = this.getPosResult(server, receiver);
         var timerResult = this.getTimerResult();
 
@@ -230,7 +230,7 @@ public class Actionbar {
         return ARROWS[index];
     }
 
-    private static String resultJoin(String str, String ...args) {
+    private static String resultJoin(String str, @Nullable String ...args) {
         ArrayList<String> result = new ArrayList<>();
         for (var i : args) {
             if (i != null) {
