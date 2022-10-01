@@ -46,7 +46,7 @@ public class Actionbar {
         this.posDisplayType = posType;
         return 1;
     }
-    public int getTimerTick() {
+    public int getTimer() {
         return this.timer;
     }
 

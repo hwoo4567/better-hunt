@@ -99,8 +99,8 @@ public class CommandRegistry {
         var home = actionbar.getHome();
         sendResultAll(
                 context,
-                "%s\nTicking: %b\nHome: %s",
-                actionbar.getTimerStr(),
+                "second: %d\nTicking: %b\nHome: %s",
+                actionbar.getTimer(),
                 actionbar.isTicking(),
                 home == null ? "???" : home.toString()
         );
