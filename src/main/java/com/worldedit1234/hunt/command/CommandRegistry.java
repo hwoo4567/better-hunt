@@ -13,9 +13,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 public class CommandRegistry {
-    private static Actionbar actionbar = Actionbar.getActionbar();
+    private final Actionbar actionbar;
+    private int result;
 
     public CommandRegistry(CommandDispatcher<CommandSourceStack> dispatcher) {
+        actionbar = Actionbar.getActionbar();
+
+        // ****************************** command ******************************
         LiteralArgumentBuilder<CommandSourceStack> cmd =
         Commands.literal("betterHunt")
         .then(Commands.literal("position")
@@ -34,7 +38,7 @@ public class CommandRegistry {
         .then(Commands.literal("timer")
                 .then(Commands.literal("start")
                         .then(Commands.argument("second", IntegerArgumentType.integer(1))
-                                .executes(CommandRegistry::setAndStartTimer)))
+                                .executes(this::setAndStartTimer)))
                 .then(Commands.literal("stop")
                         .executes(context -> actionbar.stopTimer()))
                 // timer + no arguments
@@ -44,20 +48,25 @@ public class CommandRegistry {
         .then(Commands.literal("border")
                 .then(Commands.literal("set")
                         .then(Commands.argument("size", IntegerArgumentType.integer(10))
-                                .executes(CommandRegistry::setBorderSize)))
+                                .executes(this::setBorderSize)))
                 // border + no arguments
-                .executes(CommandRegistry::sendBorderSize))
+                .executes(this::sendBorderSize))
 
         .then(Commands.literal("info")
                 .then(Commands.literal("recipes")
                         .executes(context -> sendResultAll(context, String.join("\n", Info.recipes))))
                 // info + no arguments
                 .executes(context -> sendResultAll(context, Info.description)));
-
+        // ****************************** commands ******************************
         dispatcher.register(cmd);
+        result = 1;
     }
 
-    private static int sendResult(CommandContext<CommandSourceStack> context, String message, Object... args) {
+    public int getResult() {
+        return this.result;
+    }
+
+    private int sendResult(CommandContext<CommandSourceStack> context, String message, Object... args) {
         var entity = context.getSource().getEntity();
         if (entity instanceof Player player) {
             sendMessage(player, message, args);
@@ -66,7 +75,7 @@ public class CommandRegistry {
         return 1;
     }
 
-    private static int sendResultAll(CommandContext<CommandSourceStack> context, String message, Object... args) {
+    private int sendResultAll(CommandContext<CommandSourceStack> context, String message, Object... args) {
         var server = context.getSource().getServer();
         for (var i: server.getPlayerList().getPlayers()) {
             sendMessage(i, message, args);
@@ -75,11 +84,11 @@ public class CommandRegistry {
         return 1;
     }
 
-    private static void sendMessage(Player player, String message, Object... args) {
+    private void sendMessage(Player player, String message, Object... args) {
         player.sendSystemMessage(Component.literal(String.format(message, args)));
     }
 
-    private static int setAndStartTimer(CommandContext<CommandSourceStack> context) {
+    private int setAndStartTimer(CommandContext<CommandSourceStack> context) {
         var source = context.getSource();
         actionbar.setHome(source.getServer(), source.getLevel(),
                 new BlockPos(source.getPosition()));
@@ -87,12 +96,12 @@ public class CommandRegistry {
         return 1;
     }
 
-    private static int sendBorderSize(CommandContext<CommandSourceStack> context) {
+    private int sendBorderSize(CommandContext<CommandSourceStack> context) {
         int value = IntegerArgumentType.getInteger(context, "size");
         return sendResult(context, "Border size is %d*%d.", value, value);
     }
 
-    private static int setBorderSize(CommandContext<CommandSourceStack> context) {
+    private int setBorderSize(CommandContext<CommandSourceStack> context) {
         int value = IntegerArgumentType.getInteger(context, "size");
         Setup.worldBorder(context.getSource().getServer(), value);
 

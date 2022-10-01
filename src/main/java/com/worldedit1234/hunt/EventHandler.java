@@ -45,9 +45,9 @@ public class EventHandler {
     @SubscribeEvent
     public static void onCommandRegister(RegisterCommandsEvent event) {
         var dispatcher = event.getDispatcher();
-        new CommandRegistry(dispatcher);
+        var registry = new CommandRegistry(dispatcher);
         ConfigCommand.register(dispatcher);
-        LOGGER.info("Registering commands");
+        LOGGER.info("Register commands ({}).", registry.getResult());
     }
 
     @SubscribeEvent
